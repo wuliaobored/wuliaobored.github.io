@@ -9,7 +9,7 @@
 <meta name="description" content="网站测试中*">
 <meta name="theme-color" content="#000">
 <title>Cetacean</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1642035837912">
+<link rel="shortcut icon" href="/favicon.ico?v=1642037526091">
 <link rel="stylesheet" href="/media/css/gemini.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -209,7 +209,7 @@
     </div>
     <div class="sidebar-item-box">
       <a href="/tags/">
-        <span class="site-item-stat-count">1</span>
+        <span class="site-item-stat-count">3</span>
         <span class="site-item-stat-name language" data-lan="tag">标签</span>
       </a>
     </div>
@@ -285,6 +285,10 @@
           <small class="language" data-lan="tag">标签</small>
         </h2>
       </div>
+      
+      
+      
+      
       
       
       
@@ -1203,13 +1207,13 @@
     <div class="result" id="result">
       
       <div class="item">
-        <a class="result-title" style="opacity: 0;" href="https://wuliaobored.github.io/post/chi-san-hua/"" data-c="
-          &lt;p&gt;##概念&lt;br&gt;
-将无穷大集合中若干元素映射为有限集合以便于统计，常用于元素范围过大致使数组放不下而元素个数很少的情况，注意使用条件需要&lt;strong&gt;满足问题与数值的绝对大小无关&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;##思路&lt;br&gt;
-将数据通过&lt;code&gt;sort()&lt;/code&gt;排序后借助&lt;code&gt;unique()&lt;/code&gt;删去重复元素&lt;br&gt;
+        <a class="result-title" style="opacity: 0;" href="https://wuliaobored.github.io/post/discrete/"" data-c="
+          &lt;h2 id=&#34;概念&#34;&gt;概念&lt;/h2&gt;
+&lt;p&gt;将无穷大集合中若干元素映射为有限集合以便于统计，常用于元素范围过大致使数组放不下而元素个数很少的情况，注意使用条件需要&lt;strong&gt;满足问题与数值的绝对大小无关&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;思路&#34;&gt;思路&lt;/h2&gt;
+&lt;p&gt;将数据通过&lt;code&gt;sort()&lt;/code&gt;排序后借助&lt;code&gt;unique()&lt;/code&gt;删去重复元素&lt;br&gt;
 使用&lt;code&gt;lower_bound()&lt;/code&gt;查找元素&lt;strong&gt;x&lt;/strong&gt;在离散化数组中的下标&lt;/p&gt;
-&lt;p&gt;##代码实现&lt;/p&gt;
+&lt;h2 id=&#34;代码实现&#34;&gt;代码实现&lt;/h2&gt;
 &lt;pre&gt;&lt;code class=&#34;language-C++&#34;&gt;void discrete() {	//离散化
 	sort(a, a + n);
 	t = unique(a, a + n) - a;
@@ -1220,8 +1224,9 @@ int query(int x) {	//查询
 	return lower_bound(b, b + t, x) - b;
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;##习题&lt;br&gt;
-&lt;a href=&#34;https://www.acwing.com/problem/content/description/105/&#34;&gt;AcWing103 电影&lt;/a&gt;&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;h2 id=&#34;习题&#34;&gt;习题&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.acwing.com/problem/content/description/105/&#34;&gt;AcWing103 电影&lt;/a&gt;&lt;/p&gt;
 ">离散化</a>
       </div>
       

@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://wuliaobored.github.io</id>
     <title>Cetacean</title>
-    <updated>2022-01-13T01:04:09.764Z</updated>
+    <updated>2022-01-13T01:32:20.489Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://wuliaobored.github.io"/>
     <link rel="self" href="https://wuliaobored.github.io/atom.xml"/>
@@ -12,16 +12,16 @@
     <rights>All rights reserved 2022, Cetacean</rights>
     <entry>
         <title type="html"><![CDATA[离散化]]></title>
-        <id>https://wuliaobored.github.io/post/chi-san-hua/</id>
-        <link href="https://wuliaobored.github.io/post/chi-san-hua/">
+        <id>https://wuliaobored.github.io/post/discrete/</id>
+        <link href="https://wuliaobored.github.io/post/discrete/">
         </link>
         <updated>2022-01-13T00:47:45.000Z</updated>
-        <content type="html"><![CDATA[<p>##概念<br>
-将无穷大集合中若干元素映射为有限集合以便于统计，常用于元素范围过大致使数组放不下而元素个数很少的情况，注意使用条件需要<strong>满足问题与数值的绝对大小无关</strong></p>
-<p>##思路<br>
-将数据通过<code>sort()</code>排序后借助<code>unique()</code>删去重复元素<br>
+        <summary type="html"><![CDATA[<h2 id="概念">概念</h2>
+<p>将无穷大集合中若干元素映射为有限集合以便于统计，常用于元素范围过大致使数组放不下而元素个数很少的情况，注意使用条件需要<strong>满足问题与数值的绝对大小无关</strong></p>
+<h2 id="思路">思路</h2>
+<p>将数据通过<code>sort()</code>排序后借助<code>unique()</code>删去重复元素<br>
 使用<code>lower_bound()</code>查找元素<strong>x</strong>在离散化数组中的下标</p>
-<p>##代码实现</p>
+<h2 id="代码实现">代码实现</h2>
 <pre><code class="language-C++">void discrete() {	//离散化
 	sort(a, a + n);
 	t = unique(a, a + n) - a;
@@ -32,8 +32,26 @@ int query(int x) {	//查询
 	return lower_bound(b, b + t, x) - b;
 }
 </code></pre>
-<p>##习题<br>
-<a href="https://www.acwing.com/problem/content/description/105/">AcWing103 电影</a></p>
+]]></summary>
+        <content type="html"><![CDATA[<h2 id="概念">概念</h2>
+<p>将无穷大集合中若干元素映射为有限集合以便于统计，常用于元素范围过大致使数组放不下而元素个数很少的情况，注意使用条件需要<strong>满足问题与数值的绝对大小无关</strong></p>
+<h2 id="思路">思路</h2>
+<p>将数据通过<code>sort()</code>排序后借助<code>unique()</code>删去重复元素<br>
+使用<code>lower_bound()</code>查找元素<strong>x</strong>在离散化数组中的下标</p>
+<h2 id="代码实现">代码实现</h2>
+<pre><code class="language-C++">void discrete() {	//离散化
+	sort(a, a + n);
+	t = unique(a, a + n) - a;
+	for (int i = 0; i &lt; t; i++) 
+		b[i] = a[i];
+}
+int query(int x) {	//查询
+	return lower_bound(b, b + t, x) - b;
+}
+</code></pre>
+<!-- more -->
+<h2 id="习题">习题</h2>
+<p><a href="https://www.acwing.com/problem/content/description/105/">AcWing103 电影</a></p>
 ]]></content>
     </entry>
     <entry>

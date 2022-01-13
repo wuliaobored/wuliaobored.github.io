@@ -9,7 +9,7 @@
 <meta name="description" content="网站测试中*">
 <meta name="theme-color" content="#000">
 <title>Cetacean</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1642035837912">
+<link rel="shortcut icon" href="/favicon.ico?v=1642037526091">
 <link rel="stylesheet" href="/media/css/gemini.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -209,7 +209,7 @@
     </div>
     <div class="sidebar-item-box">
       <a href="/tags/">
-        <span class="site-item-stat-count">1</span>
+        <span class="site-item-stat-count">3</span>
         <span class="site-item-stat-name language" data-lan="tag">标签</span>
       </a>
     </div>
@@ -281,7 +281,7 @@
     <div class="article-wrapper bg-color">
       <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://wuliaobored.github.io/post/chi-san-hua/"> 离散化 </a>
+    <a class="post-title-link" href="https://wuliaobored.github.io/post/discrete/"> 离散化 </a>
   </h1>
   <div class="post-meta">
     
@@ -291,6 +291,18 @@
       <span class="publish-time" data-t="2022-01-13 08:47:45">2022-01-13</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
+    
+    <span class="meta-item">
+      <i class="fa fa-folder-o"></i>
+      <span class="pc-show language" data-lan="category-in">标签:</span>
+       
+      <a href="https://wuliaobored.github.io/tag/cplusplus/"> <span>C++</span> </a>、   
+      <a href="https://wuliaobored.github.io/tag/algorithm/">
+        <span>算法</span>
+      </a>
+       
+    </span>
+    <span class="post-meta-divider">|</span>
     
     <span class="meta-item">
       <i class="fa fa-clock-o"></i>
@@ -316,12 +328,28 @@
       <div class="post-body">
         
         
-          
+          <h2 id="概念">概念</h2>
+<p>将无穷大集合中若干元素映射为有限集合以便于统计，常用于元素范围过大致使数组放不下而元素个数很少的情况，注意使用条件需要<strong>满足问题与数值的绝对大小无关</strong></p>
+<h2 id="思路">思路</h2>
+<p>将数据通过<code>sort()</code>排序后借助<code>unique()</code>删去重复元素<br>
+使用<code>lower_bound()</code>查找元素<strong>x</strong>在离散化数组中的下标</p>
+<h2 id="代码实现">代码实现</h2>
+<pre><code class="language-C++">void discrete() {	//离散化
+	sort(a, a + n);
+	t = unique(a, a + n) - a;
+	for (int i = 0; i &lt; t; i++) 
+		b[i] = a[i];
+}
+int query(int x) {	//查询
+	return lower_bound(b, b + t, x) - b;
+}
+</code></pre>
+
           
         
         
         <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://wuliaobored.github.io/post/chi-san-hua/" rel="contents">
+          <a class="btn language" data-lan="read-more" href="https://wuliaobored.github.io/post/discrete/" rel="contents">
             阅读全文 »
           </a>
         </div>
@@ -1364,13 +1392,13 @@
     <div class="result" id="result">
       
       <div class="item">
-        <a class="result-title" style="opacity: 0;" href="https://wuliaobored.github.io/post/chi-san-hua/"" data-c="
-          &lt;p&gt;##概念&lt;br&gt;
-将无穷大集合中若干元素映射为有限集合以便于统计，常用于元素范围过大致使数组放不下而元素个数很少的情况，注意使用条件需要&lt;strong&gt;满足问题与数值的绝对大小无关&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;##思路&lt;br&gt;
-将数据通过&lt;code&gt;sort()&lt;/code&gt;排序后借助&lt;code&gt;unique()&lt;/code&gt;删去重复元素&lt;br&gt;
+        <a class="result-title" style="opacity: 0;" href="https://wuliaobored.github.io/post/discrete/"" data-c="
+          &lt;h2 id=&#34;概念&#34;&gt;概念&lt;/h2&gt;
+&lt;p&gt;将无穷大集合中若干元素映射为有限集合以便于统计，常用于元素范围过大致使数组放不下而元素个数很少的情况，注意使用条件需要&lt;strong&gt;满足问题与数值的绝对大小无关&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;思路&#34;&gt;思路&lt;/h2&gt;
+&lt;p&gt;将数据通过&lt;code&gt;sort()&lt;/code&gt;排序后借助&lt;code&gt;unique()&lt;/code&gt;删去重复元素&lt;br&gt;
 使用&lt;code&gt;lower_bound()&lt;/code&gt;查找元素&lt;strong&gt;x&lt;/strong&gt;在离散化数组中的下标&lt;/p&gt;
-&lt;p&gt;##代码实现&lt;/p&gt;
+&lt;h2 id=&#34;代码实现&#34;&gt;代码实现&lt;/h2&gt;
 &lt;pre&gt;&lt;code class=&#34;language-C++&#34;&gt;void discrete() {	//离散化
 	sort(a, a + n);
 	t = unique(a, a + n) - a;
@@ -1381,8 +1409,9 @@ int query(int x) {	//查询
 	return lower_bound(b, b + t, x) - b;
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;##习题&lt;br&gt;
-&lt;a href=&#34;https://www.acwing.com/problem/content/description/105/&#34;&gt;AcWing103 电影&lt;/a&gt;&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;h2 id=&#34;习题&#34;&gt;习题&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.acwing.com/problem/content/description/105/&#34;&gt;AcWing103 电影&lt;/a&gt;&lt;/p&gt;
 ">离散化</a>
       </div>
       
