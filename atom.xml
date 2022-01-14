@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://wuliaobored.github.io</id>
     <title>Cetacean</title>
-    <updated>2022-01-13T14:39:11.721Z</updated>
+    <updated>2022-01-14T12:48:43.696Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://wuliaobored.github.io"/>
     <link rel="self" href="https://wuliaobored.github.io/atom.xml"/>
@@ -15,82 +15,99 @@
         <id>https://wuliaobored.github.io/post/kmp/</id>
         <link href="https://wuliaobored.github.io/post/kmp/">
         </link>
-        <updated>2022-01-13T13:42:01.000Z</updated>
+        <updated>2022-01-14T12:30:00.000Z</updated>
         <summary type="html"><![CDATA[<h2 id="作用">作用</h2>
-<p>KMP算法，又称模式匹配算法，用于快速求出字符串A在字符串B中出现的位置</p>
+<p>KMP算法，又称模式匹配算法，用于快速求出字符串A在字符串B中各次出现的位置，于Knuth、Pratt和Morris三人在1977年共同发布</p>
 <h2 id="思路">思路</h2>
+<p>匹配两个字符串时，朴素算法为遍历字符串B每一位，同时遍历字符串A检查是否与B匹配，匹配失败跳转B的下一位，并重新开始匹配<br>
+KMP算法就是对匹配失败时的跳转进行了优化。匹配失败时如果此时已匹配好的字符串A子串的后缀与其前缀相等，那么就无需从已经匹配好的B的子串第一位的下一位，而可以一次性跳转到<strong>已经匹配好的B的子串第一位后面等值于A子串此时前后缀相等位数</strong>。由此可知，我们需要对字符串A进行预处理，求得字符串A从头开始每个子串的最大公共真前后缀(不包括A本身的前后缀)，再将A与B进行匹配，失败时跳转此时A最大公共前后缀长度</p>
+<h3 id="做法">做法</h3>
 <ol>
-<li>遍历字符串A，求出字符串A第一位到第i位的子串的真前缀与真后缀可以匹配的最大长度，存为数组pi</li>
-<li>遍历字符串B，从字符串B第一位开始与字符串A进行匹配，匹配成功则字符串B下一位与字符串A下一位进行匹配，当匹配失败时从B的当前位加上数组pi中存放的此时字符串A子串真前后缀最大长度开始重新匹配，同时在A与B完全匹配时用数组f记录位置</li>
+<li>对字符串A进行自我匹配，求出最大公共真前后缀：<br>
+对字符串A进行遍历，对于第i位，求出字符串A第1位到第i位的子串的真前缀与真后缀所能匹配的最大长度，即<strong>最大公共真前后缀的长度</strong>，记录为数组<code>next[i]</code></li>
+<li>对字符串B与字符串A进行匹配：<br>
+对字符串B进行遍历，从字符串B第1位开始与字符串A第j+1位进行匹配，若匹配成功则对两个字符串下一位进行匹配，若匹配失败则<strong>字符串B第i位与字符串A第next[j]位开始匹配</strong>，仍然匹配失败则与字符串A第<code>next[next[j]]</code>位进行匹配，以此类推，直至匹配成功继续对两字符串下一位进行匹配，每当完全匹配字符串A与B时用数组记录下此刻位置</li>
 </ol>
-<p>##优化</p>
+<h3 id="求解next数组">求解next数组</h3>
+<p>数组next[i]表示此时字符串A第一位到第i位子串的最大公共前后缀长度<br>
+假设现在我们已经求出了<code>next[i-1]</code>，需要求<code>next[i]</code>：<br>
+于是我们在已经匹配完毕的子串末尾新加了一个字符<code>a[i]</code>，则此时需判断<code>a[i]</code>是否能与<code>a[j+1]</code>匹配<br>
+若匹配失败，则与<code>a[next[(j+1)-1]]</code>进行匹配，即<code>next[i] = next[j]</code><br>
+若匹配成功，则<code>next[i] = next[i-1] + 1</code></p>
 <h2 id="代码">代码</h2>
-<pre><code class="language-C++">
-#include &lt;iostream&gt;
+<pre><code class="language-C++">#include &lt;iostream&gt;
 using namespace std;
 const int SIZE = 1e6 + 10;
-char a[SIZE], b[SIZE];
+char a[SIZE], b[SIZE];		//目标是从字符串B中找字符串A的位置
 int n, m;
-int pi[SIZE];
+int Next[SIZE];				//Next[i]储存字符串A前i位的最大公共真前后缀的长度
 int main() {
-	cin &gt;&gt; n &gt;&gt; a + 1 &gt;&gt; m &gt;&gt; b + 1;
-	for (int i = 2; i &lt;= n; i++) {
-		int j = pi[i - 1];
-		while (j &gt; 0 &amp;&amp; a[i] != a[j + 1])	j = pi[j];
-		if (a[i] == a[j + 1])	j++;
-		pi[i] = j;
+	cin &gt;&gt; n &gt;&gt; a + 1 &gt;&gt; m &gt;&gt; b + 1;	//字符串下标从1开始
+	for (int i = 2, j = 0; i &lt;= n; i++) {
+		while (j &gt; 0 &amp;&amp; a[i] != a[j + 1])	j = Next[j];	//将j赋值位Next[j]直到下一位匹配成功或j = 0(即重头开始匹配)
+		if (a[i] == a[j + 1])	j++;						//当下一位匹配成功时将j+1以匹配下一位
+		Next[i] = j;										//储存此时最大真前后缀的值
 	}
 	for (int i = 1, j = 0; i &lt;= m; i++) {
-		while (j &gt; 0 &amp;&amp; b[i] != a[j + 1])	j = pi[j];
+		while (j &gt; 0 &amp;&amp; b[i] != a[j + 1])	j = Next[j];	//思路同上，只不过上面为A自己匹配，这次为A与B相匹配
 		if (b[i] == a[j + 1])	j++;
-		if (j == n) {
+		if (j == n) {		//完全匹配成功
 			cout &lt;&lt; i - n &lt;&lt; &quot; &quot;;
-			j = pi[j];
 		}
-	}
+	}	
 	return 0;
 }
 </code></pre>
 ]]></summary>
         <content type="html"><![CDATA[<h2 id="作用">作用</h2>
-<p>KMP算法，又称模式匹配算法，用于快速求出字符串A在字符串B中出现的位置</p>
+<p>KMP算法，又称模式匹配算法，用于快速求出字符串A在字符串B中各次出现的位置，于Knuth、Pratt和Morris三人在1977年共同发布</p>
 <h2 id="思路">思路</h2>
+<p>匹配两个字符串时，朴素算法为遍历字符串B每一位，同时遍历字符串A检查是否与B匹配，匹配失败跳转B的下一位，并重新开始匹配<br>
+KMP算法就是对匹配失败时的跳转进行了优化。匹配失败时如果此时已匹配好的字符串A子串的后缀与其前缀相等，那么就无需从已经匹配好的B的子串第一位的下一位，而可以一次性跳转到<strong>已经匹配好的B的子串第一位后面等值于A子串此时前后缀相等位数</strong>。由此可知，我们需要对字符串A进行预处理，求得字符串A从头开始每个子串的最大公共真前后缀(不包括A本身的前后缀)，再将A与B进行匹配，失败时跳转此时A最大公共前后缀长度</p>
+<h3 id="做法">做法</h3>
 <ol>
-<li>遍历字符串A，求出字符串A第一位到第i位的子串的真前缀与真后缀可以匹配的最大长度，存为数组pi</li>
-<li>遍历字符串B，从字符串B第一位开始与字符串A进行匹配，匹配成功则字符串B下一位与字符串A下一位进行匹配，当匹配失败时从B的当前位加上数组pi中存放的此时字符串A子串真前后缀最大长度开始重新匹配，同时在A与B完全匹配时用数组f记录位置</li>
+<li>对字符串A进行自我匹配，求出最大公共真前后缀：<br>
+对字符串A进行遍历，对于第i位，求出字符串A第1位到第i位的子串的真前缀与真后缀所能匹配的最大长度，即<strong>最大公共真前后缀的长度</strong>，记录为数组<code>next[i]</code></li>
+<li>对字符串B与字符串A进行匹配：<br>
+对字符串B进行遍历，从字符串B第1位开始与字符串A第j+1位进行匹配，若匹配成功则对两个字符串下一位进行匹配，若匹配失败则<strong>字符串B第i位与字符串A第next[j]位开始匹配</strong>，仍然匹配失败则与字符串A第<code>next[next[j]]</code>位进行匹配，以此类推，直至匹配成功继续对两字符串下一位进行匹配，每当完全匹配字符串A与B时用数组记录下此刻位置</li>
 </ol>
-<p>##优化</p>
+<h3 id="求解next数组">求解next数组</h3>
+<p>数组next[i]表示此时字符串A第一位到第i位子串的最大公共前后缀长度<br>
+假设现在我们已经求出了<code>next[i-1]</code>，需要求<code>next[i]</code>：<br>
+于是我们在已经匹配完毕的子串末尾新加了一个字符<code>a[i]</code>，则此时需判断<code>a[i]</code>是否能与<code>a[j+1]</code>匹配<br>
+若匹配失败，则与<code>a[next[(j+1)-1]]</code>进行匹配，即<code>next[i] = next[j]</code><br>
+若匹配成功，则<code>next[i] = next[i-1] + 1</code></p>
 <h2 id="代码">代码</h2>
-<pre><code class="language-C++">
-#include &lt;iostream&gt;
+<pre><code class="language-C++">#include &lt;iostream&gt;
 using namespace std;
 const int SIZE = 1e6 + 10;
-char a[SIZE], b[SIZE];
+char a[SIZE], b[SIZE];		//目标是从字符串B中找字符串A的位置
 int n, m;
-int pi[SIZE];
+int Next[SIZE];				//Next[i]储存字符串A前i位的最大公共真前后缀的长度
 int main() {
-	cin &gt;&gt; n &gt;&gt; a + 1 &gt;&gt; m &gt;&gt; b + 1;
-	for (int i = 2; i &lt;= n; i++) {
-		int j = pi[i - 1];
-		while (j &gt; 0 &amp;&amp; a[i] != a[j + 1])	j = pi[j];
-		if (a[i] == a[j + 1])	j++;
-		pi[i] = j;
+	cin &gt;&gt; n &gt;&gt; a + 1 &gt;&gt; m &gt;&gt; b + 1;	//字符串下标从1开始
+	for (int i = 2, j = 0; i &lt;= n; i++) {
+		while (j &gt; 0 &amp;&amp; a[i] != a[j + 1])	j = Next[j];	//将j赋值位Next[j]直到下一位匹配成功或j = 0(即重头开始匹配)
+		if (a[i] == a[j + 1])	j++;						//当下一位匹配成功时将j+1以匹配下一位
+		Next[i] = j;										//储存此时最大真前后缀的值
 	}
 	for (int i = 1, j = 0; i &lt;= m; i++) {
-		while (j &gt; 0 &amp;&amp; b[i] != a[j + 1])	j = pi[j];
+		while (j &gt; 0 &amp;&amp; b[i] != a[j + 1])	j = Next[j];	//思路同上，只不过上面为A自己匹配，这次为A与B相匹配
 		if (b[i] == a[j + 1])	j++;
-		if (j == n) {
+		if (j == n) {		//完全匹配成功
 			cout &lt;&lt; i - n &lt;&lt; &quot; &quot;;
-			j = pi[j];
 		}
-	}
+	}	
 	return 0;
 }
 </code></pre>
 <!-- more -->
 <h2 id="推荐文章">推荐文章</h2>
 <p><a href="https://oi-wiki.org/string/kmp/">OI-WIKI: KMP</a><br>
-<a href="https://www.cnblogs.com/lijingran/p/8619711.html">博客园lijingran：KMP</a></p>
+<a href="https://www.cnblogs.com/lijingran/p/8619711.html">博客园lijingran：KMP</a><br>
+<a href="https://www.cnblogs.com/dusf/p/kmp.html">博客园sofu6: KMP</a></p>
+<h2 id="习题">习题</h2>
+<p><a href="https://www.luogu.com.cn/problem/P1709">P1709 Hidden Password</a></p>
 ]]></content>
     </entry>
     <entry>
@@ -136,7 +153,8 @@ n &gt;&gt; 1 = <span class="katex"><span class="katex-mathml"><math><semantics><
 <p>求<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>a</mi><mi>b</mi></msup><mo>≡</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">a^b\equiv p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.849108em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">b</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≡</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span></span></span></span></p>
 <h3 id="思路">思路：</h3>
 <p>将b拆为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><msub><mi>k</mi><mn>1</mn></msub></msup><mo>+</mo><msup><mn>2</mn><msub><mi>k</mi><mn>2</mn></msub></msup><mo>+</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo>+</mo><msup><mi>x</mi><msub><mi>k</mi><mi>n</mi></msub></msup></mrow><annotation encoding="application/x-tex">2^{k_1} + 2^{k_2} + ... + x^{k_n}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.932438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31731428571428577em;"><span style="top:-2.357em;margin-left:-0.03148em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.932438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31731428571428577em;"><span style="top:-2.357em;margin-left:-0.03148em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.849108em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.16454285714285719em;"><span style="top:-2.357em;margin-left:-0.03148em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>，即将b个a相乘拆为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mo>∗</mo><msup><mn>2</mn><msub><mi>k</mi><mn>1</mn></msub></msup><mo>+</mo><mi>a</mi><mo>∗</mo><msup><mn>2</mn><msub><mi>k</mi><mn>2</mn></msub></msup><mo>+</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo>+</mo><mi>a</mi><mo>∗</mo><msup><mi>x</mi><msub><mi>k</mi><mi>n</mi></msub></msup></mrow><annotation encoding="application/x-tex">a*2^{k_1} + a*2^{k_2} + ... + a*x^{k_n}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.46528em;vertical-align:0em;"></span><span class="mord mathdefault">a</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.932438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31731428571428577em;"><span style="top:-2.357em;margin-left:-0.03148em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.46528em;vertical-align:0em;"></span><span class="mord mathdefault">a</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.932438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31731428571428577em;"><span style="top:-2.357em;margin-left:-0.03148em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.46528em;vertical-align:0em;"></span><span class="mord mathdefault">a</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.849108em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.16454285714285719em;"><span style="top:-2.357em;margin-left:-0.03148em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><br>
-先预处理<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>a</mi><msup><mn>2</mn><mi>n</mi></msup></msup></mrow><annotation encoding="application/x-tex">a^{2^n}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.87998em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.87998em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7385428571428572em;"><span style="top:-2.931em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">n</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>的值，再把b用二进制表示，循环b二进制位数次，每次第0位为1时将答案与<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>a</mi><msup><mn>2</mn><mi>i</mi></msup></msup></mrow><annotation encoding="application/x-tex">a^{2^i}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9944599999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9944599999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9020857142857143em;"><span style="top:-2.931em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>相乘</p>
+先预处理<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>a</mi><msup><mn>2</mn><mi>n</mi></msup></msup></mrow><annotation encoding="application/x-tex">a^{2^n}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.87998em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.87998em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7385428571428572em;"><span style="top:-2.931em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">n</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>的值，再把b用二进制表示，循环b二进制位数次，每次第0位为1时将答案与<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>a</mi><msup><mn>2</mn><mi>i</mi></msup></msup></mrow><annotation encoding="application/x-tex">a^{2^i}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9944599999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9944599999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9020857142857143em;"><span style="top:-2.931em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>相乘<br>
+此种思路同样可以计算<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mo>∗</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">a*b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.46528em;vertical-align:0em;"></span><span class="mord mathdefault">a</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">b</span></span></span></span></p>
 <h3 id="模板">模板：</h3>
 <pre><code class="language-C++">long long quick_pow(int a, int b, int p) {
 	int ans = 1 % p;
@@ -150,6 +168,15 @@ n &gt;&gt; 1 = <span class="katex"><span class="katex-mathml"><math><semantics><
 }
 </code></pre>
 <h2 id="二进制状态压缩">二进制状态压缩</h2>
+<p>用一个二进制整数表示bool数组</p>
+<h3 id="实现">实现：</h3>
+<ul>
+<li>取出整数在二进制表示下的第k位  <code>(n &gt;&gt; k) &amp; 1</code></li>
+<li>取出整数在二进制表示下的第0~k-1位  <code>n &amp; ((1 &lt;&lt; k) - 1)</code></li>
+<li>将整数在二进制表示下的第k位取反  <code>n ^ (1 &lt;&lt; k)</code></li>
+<li>对整数在二进制表示下的第k位赋值为1  <code>n | (1 &lt;&lt; k)</code></li>
+<li>对整数在二进制表示下的第k位赋值为0  <code>n &amp; (~(1 &lt;&lt; k))</code></li>
+</ul>
 <h2 id="成对变换">成对变换</h2>
 <h2 id="lowbit-运算">lowbit 运算</h2>
 <h2 id="推荐文章">推荐文章</h2>
