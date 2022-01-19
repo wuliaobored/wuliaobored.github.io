@@ -9,7 +9,7 @@
 <meta name="description" content="网站测试中*">
 <meta name="theme-color" content="#000">
 <title>离散化 | Cetacean</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1642164513310">
+<link rel="shortcut icon" href="/favicon.ico?v=1642600800117">
 <link rel="stylesheet" href="/media/css/gemini.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -52,7 +52,7 @@
 
 
   <meta name="description" content="离散化" />
-  <meta name="keywords" content="C++,算法" />
+  <meta name="keywords" content="算法" />
 </head>
 
 <body>
@@ -221,7 +221,7 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">4</span>
+        <span class="site-item-stat-count">6</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
@@ -570,7 +570,6 @@
       <i class="fa fa-folder-o"></i>
       <span class="pc-show language" data-lan="category-in">标签:</span>
        
-      <a href="https://wuliaobored.github.io/tag/cplusplus/"> <span>C++</span> </a>、   
       <a href="https://wuliaobored.github.io/tag/algorithm/">
         <span>算法</span>
       </a>
@@ -643,8 +642,6 @@ int query(int x) {	//查询
     </li>
   </ul>
   <div class="tags">
-    
-      <a href="https://wuliaobored.github.io/tag/cplusplus/"># C++</a>
     
       <a href="https://wuliaobored.github.io/tag/algorithm/"># 算法</a>
     
@@ -1799,6 +1796,93 @@ int query(int x) {	//查询
       <hr>
     </div>
     <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://wuliaobored.github.io/post/nearest_points/"" data-c="
+          &lt;h2 id=&#34;代码&#34;&gt;代码&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-C++&#34;&gt;#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;algorithm&amp;gt;
+#include &amp;lt;cmath&amp;gt;
+#include &amp;lt;vector&amp;gt;
+using namespace std;
+struct Point { int x, y; };
+typedef vector&amp;lt;Point&amp;gt;::iterator itp;	//指针类型，用于遍历vector函数
+typedef vector&amp;lt;Point&amp;gt; vec;
+bool cmpx(const Point a, const Point b) { return a.x &amp;lt; b.x; }	//比较两点的X坐标大小
+bool cmpy(const Point a, const Point b) { return a.y &amp;lt; b.y; }	//比较两点的Y坐标大小
+double distance(const Point a, const Point b) { return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2)); }	//计算两点间距离
+vec p;
+double ans = 1e18;
+void Solve(itp l, itp r, double&amp;amp; d) {
+	if (r - l &amp;lt;= 1)	return;				//当区间长度小于等于1时返回
+	vec Q;
+	itp mid = l + (r - l) / 2;			//分治思想，将区间拆分为两个小区间计算
+	double w = mid-&amp;gt;x;					//w为大区间中点对应点的x坐标
+	Solve(l, mid, d);					//计算区间[l, mid)中距离最小值
+	Solve(mid, r, d);					//计算区间[mid, r)中距离最小值
+	inplace_merge(l, mid, r, cmpy);		//使用merge函数将区间按y轴从小到大合并
+	for (itp x = l; x != r; x++)		
+		if (abs(w - x-&amp;gt;x) &amp;lt;= d)			//将此时到垂直于x轴中的直线的距离小于此时最小距离d的点放入Q待处理
+			Q.push_back(*x);
+	for (itp x = Q.begin(), y = x; x != Q.end(); x++) {	//遍历Q，对于Q中每一个点x
+		while (y != Q.end() &amp;amp;&amp;amp; y-&amp;gt;y &amp;lt;= x-&amp;gt;y + d)		//找出到此点x的距离小于最小距离d的个数y
+			y++;						 
+		for (itp z = x + 1; z != y; z++)				//计算从点x后面一个点开始y个点到点x的距离
+			d = min(d, distance(*x, *z));				//更新最小距离
+	}
+}
+int main() {
+	int n, x, y;
+	Point tmp;
+	cin.tie(0), cout.tie(0);
+	std::ios::sync_with_stdio(false);
+	cin &amp;gt;&amp;gt; n;
+	for (int i = 0; i &amp;lt; n; i++) {
+		cin &amp;gt;&amp;gt; x &amp;gt;&amp;gt; y;
+		tmp.x = x, tmp.y = y;
+		p.push_back(tmp);
+	}
+	sort(p.begin(), p.end(), cmpx);
+	Solve(p.begin(), p.end(), ans);
+	printf(&amp;quot;%.0lf\n&amp;quot;, ans*ans);
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;!-- more --&gt;
+&lt;h2 id=&#34;习题luogu-p7883&#34;&gt;&lt;a href=&#34;https://www.luogu.com.cn/problem/P7883&#34;&gt;习题:Luogu P7883&lt;/a&gt;&lt;/h2&gt;
+&lt;h2 id=&#34;参考文章&#34;&gt;&lt;a href=&#34;https://www.luogu.com.cn/blog/over-knee-socks/solution-p7883&#34;&gt;参考文章&lt;/a&gt;&lt;/h2&gt;
+">平面最近点对</a>
+      </div>
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://wuliaobored.github.io/post/sparse_table/"" data-c="
+          &lt;h2 id=&#34;作用&#34;&gt;作用&lt;/h2&gt;
+&lt;p&gt;ST算法，通过倍增的思想较快求解RMQ(区间最值)问题&lt;/p&gt;
+&lt;h2 id=&#34;思路&#34;&gt;思路&lt;/h2&gt;
+&lt;p&gt;设&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;mo&gt;[&lt;/mo&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;mo separator=&#34;true&#34;&gt;,&lt;/mo&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;mo&gt;]&lt;/mo&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;mo&gt;[&lt;/mo&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;mo separator=&#34;true&#34;&gt;,&lt;/mo&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;/msup&gt;&lt;mo&gt;−&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;F[i, j]=max[i, i+2^j-1]&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34; style=&#34;margin-right:0.13889em;&#34;&gt;F&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;mpunct&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.16666666666666666em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34; style=&#34;margin-right:0.05724em;&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mrel&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;mpunct&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.16666666666666666em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.907994em;vertical-align:-0.08333em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;msupsub&#34;&gt;&lt;span class=&#34;vlist-t&#34;&gt;&lt;span class=&#34;vlist-r&#34;&gt;&lt;span class=&#34;vlist&#34; style=&#34;height:0.824664em;&#34;&gt;&lt;span style=&#34;top:-3.063em;margin-right:0.05em;&#34;&gt;&lt;span class=&#34;pstrut&#34; style=&#34;height:2.7em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;sizing reset-size6 size3 mtight&#34;&gt;&lt;span class=&#34;mord mathdefault mtight&#34; style=&#34;margin-right:0.05724em;&#34;&gt;j&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;−&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;，则可以通过递推求解每个具有代表性的区间的最值，这些区间的右端点为左端点加上2的整数次幂减去1&lt;br&gt;
+递推时用到了倍增的思想，即子区间长度成倍增长。有公式&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;mo&gt;[&lt;/mo&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;mo separator=&#34;true&#34;&gt;,&lt;/mo&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;mo&gt;]&lt;/mo&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;mo&gt;[&lt;/mo&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;mo separator=&#34;true&#34;&gt;,&lt;/mo&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;mo&gt;−&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;]&lt;/mo&gt;&lt;mo separator=&#34;true&#34;&gt;,&lt;/mo&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;mo&gt;[&lt;/mo&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mrow&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;mo&gt;−&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;mo separator=&#34;true&#34;&gt;,&lt;/mo&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;mo&gt;−&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;]&lt;/mo&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;F[i, j] = max(F[i, j-1], F[i+2^{j-1}, j-1])&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34; style=&#34;margin-right:0.13889em;&#34;&gt;F&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;mpunct&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.16666666666666666em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34; style=&#34;margin-right:0.05724em;&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mrel&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2777777777777778em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34; style=&#34;margin-right:0.13889em;&#34;&gt;F&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;mpunct&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.16666666666666666em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34; style=&#34;margin-right:0.05724em;&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;−&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;mpunct&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.16666666666666666em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34; style=&#34;margin-right:0.13889em;&#34;&gt;F&lt;/span&gt;&lt;span class=&#34;mopen&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1.019104em;vertical-align:-0.19444em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;msupsub&#34;&gt;&lt;span class=&#34;vlist-t&#34;&gt;&lt;span class=&#34;vlist-r&#34;&gt;&lt;span class=&#34;vlist&#34; style=&#34;height:0.824664em;&#34;&gt;&lt;span style=&#34;top:-3.063em;margin-right:0.05em;&#34;&gt;&lt;span class=&#34;pstrut&#34; style=&#34;height:2.7em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;sizing reset-size6 size3 mtight&#34;&gt;&lt;span class=&#34;mord mtight&#34;&gt;&lt;span class=&#34;mord mathdefault mtight&#34; style=&#34;margin-right:0.05724em;&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;mbin mtight&#34;&gt;−&lt;/span&gt;&lt;span class=&#34;mord mtight&#34;&gt;1&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;mpunct&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.16666666666666666em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord mathdefault&#34; style=&#34;margin-right:0.05724em;&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mbin&#34;&gt;−&lt;/span&gt;&lt;span class=&#34;mspace&#34; style=&#34;margin-right:0.2222222222222222em;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:1em;vertical-align:-0.25em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;mclose&#34;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;，即将长度为&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;/msup&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;2^j&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.824664em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;msupsub&#34;&gt;&lt;span class=&#34;vlist-t&#34;&gt;&lt;span class=&#34;vlist-r&#34;&gt;&lt;span class=&#34;vlist&#34; style=&#34;height:0.824664em;&#34;&gt;&lt;span style=&#34;top:-3.063em;margin-right:0.05em;&#34;&gt;&lt;span class=&#34;pstrut&#34; style=&#34;height:2.7em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;sizing reset-size6 size3 mtight&#34;&gt;&lt;span class=&#34;mord mathdefault mtight&#34; style=&#34;margin-right:0.05724em;&#34;&gt;j&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;的子区间拆为两个长度皆为&lt;span class=&#34;katex&#34;&gt;&lt;span class=&#34;katex-mathml&#34;&gt;&lt;math&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mrow&gt;&lt;mi&gt;j&lt;/mi&gt;&lt;mo&gt;−&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;/mrow&gt;&lt;annotation encoding=&#34;application/x-tex&#34;&gt;2^{j-1}&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/span&gt;&lt;span class=&#34;katex-html&#34; aria-hidden=&#34;true&#34;&gt;&lt;span class=&#34;base&#34;&gt;&lt;span class=&#34;strut&#34; style=&#34;height:0.824664em;vertical-align:0em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;mord&#34;&gt;&lt;span class=&#34;mord&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;msupsub&#34;&gt;&lt;span class=&#34;vlist-t&#34;&gt;&lt;span class=&#34;vlist-r&#34;&gt;&lt;span class=&#34;vlist&#34; style=&#34;height:0.824664em;&#34;&gt;&lt;span style=&#34;top:-3.063em;margin-right:0.05em;&#34;&gt;&lt;span class=&#34;pstrut&#34; style=&#34;height:2.7em;&#34;&gt;&lt;/span&gt;&lt;span class=&#34;sizing reset-size6 size3 mtight&#34;&gt;&lt;span class=&#34;mord mtight&#34;&gt;&lt;span class=&#34;mord mathdefault mtight&#34; style=&#34;margin-right:0.05724em;&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;mbin mtight&#34;&gt;−&lt;/span&gt;&lt;span class=&#34;mord mtight&#34;&gt;1&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;的子区间取最大值&lt;br&gt;
+询问时&lt;/p&gt;
+&lt;h2 id=&#34;代码&#34;&gt;代码&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-C++&#34;&gt;void ST_prework() {
+	for (int i = 1; i &amp;lt;= N; i++)
+		f[i][0] = a[i];
+	int t = log2(N) + 1;
+	for (int j = 1; j &amp;lt; t; j++)
+		for (int i = 1; i &amp;lt;= N - (1 &amp;lt;&amp;lt; j) + 1; i++)
+			f[i][j] = max(f[i][j - 1], f[i + (1 &amp;lt;&amp;lt; (j - 1))][j - 1]);
+}
+int ST_query(int l, int r) {
+	int k = log2(r - l + 1);
+	return max(f[l][k], f[r - (1 &amp;lt;&amp;lt; k) + 1][k]);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;!-- more --&gt;
+&lt;h2 id=&#34;习题&#34;&gt;习题&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.luogu.com.cn/problem/P3865&#34;&gt;Luogu P3865 ST表&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;https://www.luogu.com.cn/problem/P7333&#34;&gt;Luogu P7333 JFCA&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;https://www.luogu.com.cn/problem/P7809&#34;&gt;Luogu P7809 01序列&lt;/a&gt;&lt;/p&gt;
+">Sparse Table</a>
+      </div>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://wuliaobored.github.io/post/kmp/"" data-c="

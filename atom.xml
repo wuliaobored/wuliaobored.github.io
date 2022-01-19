@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://wuliaobored.github.io</id>
     <title>Cetacean</title>
-    <updated>2022-01-14T12:48:43.696Z</updated>
+    <updated>2022-01-19T14:00:03.851Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://wuliaobored.github.io"/>
     <link rel="self" href="https://wuliaobored.github.io/atom.xml"/>
@@ -10,6 +10,170 @@
     <logo>https://wuliaobored.github.io/images/avatar.png</logo>
     <icon>https://wuliaobored.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, Cetacean</rights>
+    <entry>
+        <title type="html"><![CDATA[平面最近点对]]></title>
+        <id>https://wuliaobored.github.io/post/nearest_points/</id>
+        <link href="https://wuliaobored.github.io/post/nearest_points/">
+        </link>
+        <updated>2022-01-19T13:44:15.000Z</updated>
+        <summary type="html"><![CDATA[<h2 id="代码">代码</h2>
+<pre><code class="language-C++">#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+#include &lt;vector&gt;
+using namespace std;
+struct Point { int x, y; };
+typedef vector&lt;Point&gt;::iterator itp;	//指针类型，用于遍历vector函数
+typedef vector&lt;Point&gt; vec;
+bool cmpx(const Point a, const Point b) { return a.x &lt; b.x; }	//比较两点的X坐标大小
+bool cmpy(const Point a, const Point b) { return a.y &lt; b.y; }	//比较两点的Y坐标大小
+double distance(const Point a, const Point b) { return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2)); }	//计算两点间距离
+vec p;
+double ans = 1e18;
+void Solve(itp l, itp r, double&amp; d) {
+	if (r - l &lt;= 1)	return;				//当区间长度小于等于1时返回
+	vec Q;
+	itp mid = l + (r - l) / 2;			//分治思想，将区间拆分为两个小区间计算
+	double w = mid-&gt;x;					//w为大区间中点对应点的x坐标
+	Solve(l, mid, d);					//计算区间[l, mid)中距离最小值
+	Solve(mid, r, d);					//计算区间[mid, r)中距离最小值
+	inplace_merge(l, mid, r, cmpy);		//使用merge函数将区间按y轴从小到大合并
+	for (itp x = l; x != r; x++)		
+		if (abs(w - x-&gt;x) &lt;= d)			//将此时到垂直于x轴中的直线的距离小于此时最小距离d的点放入Q待处理
+			Q.push_back(*x);
+	for (itp x = Q.begin(), y = x; x != Q.end(); x++) {	//遍历Q，对于Q中每一个点x
+		while (y != Q.end() &amp;&amp; y-&gt;y &lt;= x-&gt;y + d)		//找出到此点x的距离小于最小距离d的个数y
+			y++;						 
+		for (itp z = x + 1; z != y; z++)				//计算从点x后面一个点开始y个点到点x的距离
+			d = min(d, distance(*x, *z));				//更新最小距离
+	}
+}
+int main() {
+	int n, x, y;
+	Point tmp;
+	cin.tie(0), cout.tie(0);
+	std::ios::sync_with_stdio(false);
+	cin &gt;&gt; n;
+	for (int i = 0; i &lt; n; i++) {
+		cin &gt;&gt; x &gt;&gt; y;
+		tmp.x = x, tmp.y = y;
+		p.push_back(tmp);
+	}
+	sort(p.begin(), p.end(), cmpx);
+	Solve(p.begin(), p.end(), ans);
+	printf(&quot;%.0lf\n&quot;, ans*ans);
+	return 0;
+}
+</code></pre>
+]]></summary>
+        <content type="html"><![CDATA[<h2 id="代码">代码</h2>
+<pre><code class="language-C++">#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+#include &lt;vector&gt;
+using namespace std;
+struct Point { int x, y; };
+typedef vector&lt;Point&gt;::iterator itp;	//指针类型，用于遍历vector函数
+typedef vector&lt;Point&gt; vec;
+bool cmpx(const Point a, const Point b) { return a.x &lt; b.x; }	//比较两点的X坐标大小
+bool cmpy(const Point a, const Point b) { return a.y &lt; b.y; }	//比较两点的Y坐标大小
+double distance(const Point a, const Point b) { return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2)); }	//计算两点间距离
+vec p;
+double ans = 1e18;
+void Solve(itp l, itp r, double&amp; d) {
+	if (r - l &lt;= 1)	return;				//当区间长度小于等于1时返回
+	vec Q;
+	itp mid = l + (r - l) / 2;			//分治思想，将区间拆分为两个小区间计算
+	double w = mid-&gt;x;					//w为大区间中点对应点的x坐标
+	Solve(l, mid, d);					//计算区间[l, mid)中距离最小值
+	Solve(mid, r, d);					//计算区间[mid, r)中距离最小值
+	inplace_merge(l, mid, r, cmpy);		//使用merge函数将区间按y轴从小到大合并
+	for (itp x = l; x != r; x++)		
+		if (abs(w - x-&gt;x) &lt;= d)			//将此时到垂直于x轴中的直线的距离小于此时最小距离d的点放入Q待处理
+			Q.push_back(*x);
+	for (itp x = Q.begin(), y = x; x != Q.end(); x++) {	//遍历Q，对于Q中每一个点x
+		while (y != Q.end() &amp;&amp; y-&gt;y &lt;= x-&gt;y + d)		//找出到此点x的距离小于最小距离d的个数y
+			y++;						 
+		for (itp z = x + 1; z != y; z++)				//计算从点x后面一个点开始y个点到点x的距离
+			d = min(d, distance(*x, *z));				//更新最小距离
+	}
+}
+int main() {
+	int n, x, y;
+	Point tmp;
+	cin.tie(0), cout.tie(0);
+	std::ios::sync_with_stdio(false);
+	cin &gt;&gt; n;
+	for (int i = 0; i &lt; n; i++) {
+		cin &gt;&gt; x &gt;&gt; y;
+		tmp.x = x, tmp.y = y;
+		p.push_back(tmp);
+	}
+	sort(p.begin(), p.end(), cmpx);
+	Solve(p.begin(), p.end(), ans);
+	printf(&quot;%.0lf\n&quot;, ans*ans);
+	return 0;
+}
+</code></pre>
+<!-- more -->
+<h2 id="习题luogu-p7883"><a href="https://www.luogu.com.cn/problem/P7883">习题:Luogu P7883</a></h2>
+<h2 id="参考文章"><a href="https://www.luogu.com.cn/blog/over-knee-socks/solution-p7883">参考文章</a></h2>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Sparse Table]]></title>
+        <id>https://wuliaobored.github.io/post/sparse_table/</id>
+        <link href="https://wuliaobored.github.io/post/sparse_table/">
+        </link>
+        <updated>2022-01-17T14:02:11.000Z</updated>
+        <summary type="html"><![CDATA[<h2 id="作用">作用</h2>
+<p>ST算法，通过倍增的思想较快求解RMQ(区间最值)问题</p>
+<h2 id="思路">思路</h2>
+<p>设<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>F</mi><mo>[</mo><mi>i</mi><mo separator="true">,</mo><mi>j</mi><mo>]</mo><mo>=</mo><mi>m</mi><mi>a</mi><mi>x</mi><mo>[</mo><mi>i</mi><mo separator="true">,</mo><mi>i</mi><mo>+</mo><msup><mn>2</mn><mi>j</mi></msup><mo>−</mo><mn>1</mn><mo>]</mo></mrow><annotation encoding="application/x-tex">F[i, j]=max[i, i+2^j-1]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">a</span><span class="mord mathdefault">x</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.907994em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span></span>，则可以通过递推求解每个具有代表性的区间的最值，这些区间的右端点为左端点加上2的整数次幂减去1<br>
+递推时用到了倍增的思想，即子区间长度成倍增长。有公式<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>F</mi><mo>[</mo><mi>i</mi><mo separator="true">,</mo><mi>j</mi><mo>]</mo><mo>=</mo><mi>m</mi><mi>a</mi><mi>x</mi><mo>(</mo><mi>F</mi><mo>[</mo><mi>i</mi><mo separator="true">,</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo>]</mo><mo separator="true">,</mo><mi>F</mi><mo>[</mo><mi>i</mi><mo>+</mo><msup><mn>2</mn><mrow><mi>j</mi><mo>−</mo><mn>1</mn></mrow></msup><mo separator="true">,</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo>]</mo><mo>)</mo></mrow><annotation encoding="application/x-tex">F[i, j] = max(F[i, j-1], F[i+2^{j-1}, j-1])</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">a</span><span class="mord mathdefault">x</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.019104em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mclose">)</span></span></span></span>，即将长度为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mi>j</mi></msup></mrow><annotation encoding="application/x-tex">2^j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.824664em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span></span></span></span></span></span></span></span>的子区间拆为两个长度皆为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mrow><mi>j</mi><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">2^{j-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.824664em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span></span>的子区间取最大值<br>
+询问时</p>
+<h2 id="代码">代码</h2>
+<pre><code class="language-C++">void ST_prework() {
+	for (int i = 1; i &lt;= N; i++)
+		f[i][0] = a[i];
+	int t = log2(N) + 1;
+	for (int j = 1; j &lt; t; j++)
+		for (int i = 1; i &lt;= N - (1 &lt;&lt; j) + 1; i++)
+			f[i][j] = max(f[i][j - 1], f[i + (1 &lt;&lt; (j - 1))][j - 1]);
+}
+int ST_query(int l, int r) {
+	int k = log2(r - l + 1);
+	return max(f[l][k], f[r - (1 &lt;&lt; k) + 1][k]);
+}
+</code></pre>
+]]></summary>
+        <content type="html"><![CDATA[<h2 id="作用">作用</h2>
+<p>ST算法，通过倍增的思想较快求解RMQ(区间最值)问题</p>
+<h2 id="思路">思路</h2>
+<p>设<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>F</mi><mo>[</mo><mi>i</mi><mo separator="true">,</mo><mi>j</mi><mo>]</mo><mo>=</mo><mi>m</mi><mi>a</mi><mi>x</mi><mo>[</mo><mi>i</mi><mo separator="true">,</mo><mi>i</mi><mo>+</mo><msup><mn>2</mn><mi>j</mi></msup><mo>−</mo><mn>1</mn><mo>]</mo></mrow><annotation encoding="application/x-tex">F[i, j]=max[i, i+2^j-1]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">a</span><span class="mord mathdefault">x</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.907994em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span></span>，则可以通过递推求解每个具有代表性的区间的最值，这些区间的右端点为左端点加上2的整数次幂减去1<br>
+递推时用到了倍增的思想，即子区间长度成倍增长。有公式<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>F</mi><mo>[</mo><mi>i</mi><mo separator="true">,</mo><mi>j</mi><mo>]</mo><mo>=</mo><mi>m</mi><mi>a</mi><mi>x</mi><mo>(</mo><mi>F</mi><mo>[</mo><mi>i</mi><mo separator="true">,</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo>]</mo><mo separator="true">,</mo><mi>F</mi><mo>[</mo><mi>i</mi><mo>+</mo><msup><mn>2</mn><mrow><mi>j</mi><mo>−</mo><mn>1</mn></mrow></msup><mo separator="true">,</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo>]</mo><mo>)</mo></mrow><annotation encoding="application/x-tex">F[i, j] = max(F[i, j-1], F[i+2^{j-1}, j-1])</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">a</span><span class="mord mathdefault">x</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.019104em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mclose">)</span></span></span></span>，即将长度为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mi>j</mi></msup></mrow><annotation encoding="application/x-tex">2^j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.824664em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span></span></span></span></span></span></span></span>的子区间拆为两个长度皆为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mrow><mi>j</mi><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">2^{j-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.824664em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span></span>的子区间取最大值<br>
+询问时</p>
+<h2 id="代码">代码</h2>
+<pre><code class="language-C++">void ST_prework() {
+	for (int i = 1; i &lt;= N; i++)
+		f[i][0] = a[i];
+	int t = log2(N) + 1;
+	for (int j = 1; j &lt; t; j++)
+		for (int i = 1; i &lt;= N - (1 &lt;&lt; j) + 1; i++)
+			f[i][j] = max(f[i][j - 1], f[i + (1 &lt;&lt; (j - 1))][j - 1]);
+}
+int ST_query(int l, int r) {
+	int k = log2(r - l + 1);
+	return max(f[l][k], f[r - (1 &lt;&lt; k) + 1][k]);
+}
+</code></pre>
+<!-- more -->
+<h2 id="习题">习题</h2>
+<p><a href="https://www.luogu.com.cn/problem/P3865">Luogu P3865 ST表</a><br>
+<a href="https://www.luogu.com.cn/problem/P7333">Luogu P7333 JFCA</a><br>
+<a href="https://www.luogu.com.cn/problem/P7809">Luogu P7809 01序列</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[KMP]]></title>
         <id>https://wuliaobored.github.io/post/kmp/</id>
